@@ -1,0 +1,13 @@
+#####################################################################################
+# Date            Version            Change
+# 13/05/2019      2.0.1              Created (current)
+#####################################################################################
+---
+
+# Copying httpd rpm with dependencies 
+- import_playbook: "{{ lookup('ini', 'COMMON_SCRIPTS section=ANSIBLE file={{ configFile }}') }}/copyFiles_lin.yml"
+  vars:
+    src_dir: "{{ lookup('ini', 'SOFTWARE_SOURCE section=Common_Settings file={{ configFile }}') }}/Apache/{{ lookup('ini', 'HTTPD_RPM section=Common_Settings file={{ configFile }}') }}"
+    dest_dir: "{{ lookup('ini', 'CONNECT_SOFTWARE_LIN section=Common_Settings file={{ configFile }}') }}/"
+    hosts: "{{ hosts }}"
+

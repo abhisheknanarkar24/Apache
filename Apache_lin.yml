@@ -1,0 +1,28 @@
+#####################################################################################
+# Date            Version            Change
+# 13/05/2019      2.0.1              Created (current)
+#####################################################################################
+---
+
+# Verify Httpd
+- import_playbook: verifyServices_lin.yml
+  vars:
+    hosts: "{{ hosts }}"
+    service_name: "httpd"
+
+- import_playbook: copyApache_lin.yml
+  vars:
+    hosts: "{{ hosts }}"
+  when: ( output.stderr.find("could not be") != -1 ) or ( output.stdout.find("dead") != -1 ) or output.stdout.find("failed") != -1 
+
+
+# Unzip and install httpd as a linux service on client server
+- import_playbook: installApacheService_lin.yml
+  vars:
+    hosts: "{{ hosts }}"
+  when: ( output.stderr.find("could not be") != -1 ) or ( output.stdout.find("dead") != -1 ) or output.stdout.find("failed") != -1
+  tags:
+    - install
+
+
+
