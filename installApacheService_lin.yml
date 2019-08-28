@@ -1,0 +1,44 @@
+#####################################################################################
+# Date            Version            Change
+# 01/03/2019      1.0                created (previous)
+# 11/04/2019      2.0                backlog fixes and new features (current)
+#####################################################################################
+---
+
+- hosts: "{{ hosts }}"
+  become: "{{ lookup('ini','ANSIBLE_BECOME section=ANSIBLE file={{ configFile }}')}}"
+#  become: yes
+  vars:
+    software_source: "{{ lookup('ini', 'SOFTWARE_SOURCE section=Common_Settings file={{ configFile }}') }}/Apache"
+    assets_dir: "{{ lookup('ini', 'CONNECT_SOFTWARE_LIN section=Common_Settings file={{ configFile }}') }}"
+    httpd_rpm: "{{ lookup('ini', 'HTTPD_RPM section=Common_Settings file={{ configFile }}') }}"
+  tasks:
+
+#  - name: Define a repository
+#    shell: 'sudo createrepo "{{ assets_dir }}/{{ httpd_rpm }}"'
+
+#  - name: Create a repository
+#    yum_repository:
+#      name: httpd
+#      description: "This is local repository to install httpd"
+#      baseurl: file://{{ assets_dir }}/{{ httpd_rpm }}
+#      gpgcheck: no
+#      enabled: 1
+#      state: present
+
+#  - name: Install the packages
+#    command: 'sudo yum install -y httpd'
+#    ignore_errors: yes
+    - name: Copy install_apache.sh to remote server
+      copy:
+        src: "{{ lookup('ini', 'COMMON_SCRIPTS section=ANSIBLE file={{ configFile }}') }}/install_apache.sh"
+        dest: "/tmp/"
+
+    - name: Make script executable
+      shell: 'sudo chmod +x /tmp/install_apache.sh'
+
+    - name: Running Apache installation shell script
+      shell: "sudo /tmp/install_apache.sh {{ assets_dir }}/{{ httpd_rpm }} httpd"
+      tags:
+        - install_apache_as_service
+   
