@@ -29,9 +29,9 @@
         dest: "/tmp/"
 
     - name: Make script executable
-      shell: 'sudo chmod +x /tmp/install_apache.sh'
+      shell: 'chmod +x /tmp/install_apache.sh'
 
     - name: Running Apache installation shell script
-      shell: "sudo /tmp/install_apache.sh {{ assets_dir }}/{{ httpd_rpm }} httpd"
+      shell: "/tmp/install_apache.sh {{ assets_dir }}/{{ httpd_rpm }} httpd"
       tags:
         - install_apache_as_service
