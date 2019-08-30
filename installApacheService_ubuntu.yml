@@ -1,29 +1,25 @@
 ---
 
 - hosts: "{{ hosts }}"
+  become: true
   vars:
-    debian_package_tar: "{{ lookup('ini', 'CONNECT_SOFTWARE_LIN section=Common_Settings file={{ configFile }}') }}/{{ lookup('ini', 'APACHE_DEB section=Common_Settings file={{ configFile }}') }}"  
-    debian_package_path: "{{ lookup('ini', 'CONNECT_SOFTWARE_LIN section=Common_Settings file={{ configFile }}') }}/apache_debian/"
-    apache_port: "{{ lookup('ini', 'APACHE_LISTENING_PORT section=Common_Settings file={{ configFile }}') }}"
-    cs_ip: "{{ lookup('inventory_hostnames', 'FRA') }}"
+    debian_package_tar: "ApacheDebian.tar.gz"
+    debian_package_path: "/tmp/apache_debian/"
+    apache_port: "80"
+  #specify ip hostname TARGET should be box name from inventory file
+    target_ip: "{{ lookup('inventory_hostnames', 'TARGET') }}"
   tasks:
-
-#    - include_vars:
-#        file: "/etc/ansible/group_vars_{{ deployment_environment }}/{{ item }}.yml"
-#        name: "{{ item }}"
-#      with_items:
-#        - Apache
 
     - name: Copy install_apache_ubuntu.sh to remote server
       copy:
-        src: "{{ lookup('ini', 'COMMON_SCRIPTS section=ANSIBLE file={{ configFile }}') }}/install_apache_ubuntu.sh"
+        src: "install_apache_ubuntu.sh"
         dest: "/tmp/"
 
     - name: Make script executable
       shell: 'chmod +x /tmp/install_apache_ubuntu.sh'
  
     - name: Running Apache installation shell script
-      shell: "sudo /tmp/install_apache_ubuntu.sh {{ debian_package_tar }} {{ debian_package_path }} {{ apache_port }} {{ cs_ip }}"
+      shell: "/tmp/install_apache_ubuntu.sh {{ debian_package_tar }} {{ debian_package_path }} {{ apache_port }} {{ target_ip }}"
       ignore_errors: yes
       tags:
         - install_apache_as_service
