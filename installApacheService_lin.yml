@@ -1,12 +1,11 @@
 ---
 
 - hosts: "{{ hosts }}"
-  become: "{{ lookup('ini','ANSIBLE_BECOME section=ANSIBLE file={{ configFile }}')}}"
-#  become: yes
+  become: yes
   vars:
-    software_source: "{{ lookup('ini', 'SOFTWARE_SOURCE section=Common_Settings file={{ configFile }}') }}/Apache"
-    assets_dir: "{{ lookup('ini', 'CONNECT_SOFTWARE_LIN section=Common_Settings file={{ configFile }}') }}"
-    httpd_rpm: "{{ lookup('ini', 'HTTPD_RPM section=Common_Settings file={{ configFile }}') }}"
+    software_source: "/tmp/Apache"
+    assets_dir: "/tmp"
+    httpd_rpm: "httpd_rpm"
   tasks:
 
 #  - name: Define a repository
@@ -26,7 +25,7 @@
 #    ignore_errors: yes
     - name: Copy install_apache.sh to remote server
       copy:
-        src: "{{ lookup('ini', 'COMMON_SCRIPTS section=ANSIBLE file={{ configFile }}') }}/install_apache.sh"
+        src: "install_apache.sh"
         dest: "/tmp/"
 
     - name: Make script executable
@@ -36,4 +35,3 @@
       shell: "sudo /tmp/install_apache.sh {{ assets_dir }}/{{ httpd_rpm }} httpd"
       tags:
         - install_apache_as_service
-   
