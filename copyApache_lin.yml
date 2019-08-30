@@ -1,9 +1,9 @@
 ---
 
 # Copying httpd rpm with dependencies 
-- import_playbook: "{{ lookup('ini', 'COMMON_SCRIPTS section=ANSIBLE file={{ configFile }}') }}/copyFiles_lin.yml"
+- import_playbook: copyFiles_lin.yml
   vars:
-    src_dir: "{{ lookup('ini', 'SOFTWARE_SOURCE section=Common_Settings file={{ configFile }}') }}/Apache/{{ lookup('ini', 'HTTPD_RPM section=Common_Settings file={{ configFile }}') }}"
-    dest_dir: "{{ lookup('ini', 'CONNECT_SOFTWARE_LIN section=Common_Settings file={{ configFile }}') }}/"
+    src_dir: "Apache/httpd_rpm"
+    dest_dir: "/tmp"
     hosts: "{{ hosts }}"
 
